@@ -72,7 +72,7 @@ namespace OneKey
                 {
                     getHoster().Commands.invokeCmdString(cmd);
                     return true;
-                }, $"Binded Command => {cmd}");
+                }, $"Binding command => {cmd}");
             }
 
             foreach (var p in Setting.CommandBindedDictionary)
