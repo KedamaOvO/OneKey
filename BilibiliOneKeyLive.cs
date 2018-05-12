@@ -83,7 +83,7 @@ namespace OneKey
             JObject json = await PostAsync("/room/v1/Room/stopLive");
 
             Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
-        }
+        } 
 
         private async Task<JObject> PostAsync(string path)
         {
@@ -101,8 +101,13 @@ namespace OneKey
                 var cookies = Cookies.Split(';').Select(s => s.Trim().Split('=').Select(ss => ss.Trim()));
                 foreach (var item in cookies)
                 {
-                    if(item.Count()==2)
-                        cookieContainer.Add(baseAddress, new Cookie(item.ElementAt(0), item.ElementAt(1)));
+                    if (item.Count() == 2)
+                    {
+                        string key = item.ElementAt(0);
+                        string value = item.ElementAt(1);
+                        if(value.IndexOf(',')==-1)
+                            cookieContainer.Add(baseAddress, new Cookie(key,value));
+                    }
                 }
                 var result = client.PostAsync(path, content).Result;
                 result.EnsureSuccessStatusCode();
