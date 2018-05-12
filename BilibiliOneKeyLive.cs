@@ -71,7 +71,11 @@ namespace OneKey
 
         public async void StartLive()
         {
-            JObject json = await PostAsync("/room/v1/Room/startLive");
+            JObject json = await PostAsync("/room/v1/Room/startLive",new Dictionary<string, string>
+            {
+                { "platform", "pc"},
+                { "area_v2", "107"}
+            });
 
             Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
             Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
@@ -85,18 +89,18 @@ namespace OneKey
             Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
         } 
 
-        private async Task<JObject> PostAsync(string path)
+        private async Task<JObject> PostAsync(string path, Dictionary<string,string> dict=null)
         {
             var baseAddress = new Uri("http://api.live.bilibili.com");
             var cookieContainer = new CookieContainer();
+
+            var keyValueDict = dict ?? new Dictionary<string, string>();
+            keyValueDict.Add("room_id", RoomId);
+
             using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
             using (var client = new HttpClient(handler) { BaseAddress = baseAddress })
             {
-                var content = new FormUrlEncodedContent(new[] {
-                    new KeyValuePair<string, string>("room_id", RoomId),
-                    new KeyValuePair<string, string>("platform", "pc"),
-                    new KeyValuePair<string, string>("area_v2", "107"),
-                });
+                var content = new FormUrlEncodedContent(keyValueDict);
 
                 var cookies = Cookies.Split(';').Select(s => s.Trim().Split('=').Select(ss => ss.Trim()));
                 foreach (var item in cookies)
