@@ -4,6 +4,7 @@ using Sync.Plugins;
 using Sync.Tools;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -26,7 +27,7 @@ namespace OneKey
         {
             Type config_manager_type = typeof(PluginConfigurationManager);
             var config_manager_list = config_manager_type.GetField("ConfigurationSet", BindingFlags.Static | BindingFlags.NonPublic)
-                .GetValue(null) as LinkedList<PluginConfigurationManager>;
+                .GetValue(null) as IEnumerable<PluginConfigurationManager>;
 
             //each configuration manager
             foreach (var manager in config_manager_list)
