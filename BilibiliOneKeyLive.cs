@@ -78,9 +78,12 @@ namespace OneKey
                 { "area_v2", "107"}
             });
 
-            Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
-            Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
-            Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
+            if (json != null)
+            {
+                Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
+                Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
+                Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
+            }
         }
 
         public async void StopLive()
@@ -88,7 +91,31 @@ namespace OneKey
             JObject json = await PostAsync("/room/v1/Room/stopLive");
 
             Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
-        } 
+        }
+
+        public async void SetRoomName(string name)
+        {
+            JObject json = await PostAsync("/room/v1/Room/update",new Dictionary<string, string>()
+            {
+                ["title"]=name,
+            });
+
+            if(json!=null)
+            {
+                Sync.Tools.IO.CurrentIO.WriteColor("[OneKey]Success!",ConsoleColor.Green);
+            }
+            else
+            {
+                Sync.Tools.IO.CurrentIO.WriteColor("[OneKey]Fail!", ConsoleColor.Red);
+            }
+        }
+
+        public async Task<string> GetRoomName()
+        {
+            JObject json = await PostAsync($"/room/v1/Room/get_info?room_id={RoomId}");
+
+            return json?["data"]["title"].ToString();
+        }
 
         private async Task<JObject> PostAsync(string path, Dictionary<string,string> dict=null)
         {
@@ -121,6 +148,41 @@ namespace OneKey
                 JObject json = JObject.Parse(json_str);
 
                 if((int)json["code"]!=0)
+                {
+                    Sync.Tools.IO.CurrentIO.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
+                    return null;
+                }
+                return json;
+            }
+        }
+
+        private async Task<JObject> GetAsync(string path)
+        {
+            var baseAddress = new Uri("http://api.live.bilibili.com");
+            var cookieContainer = new CookieContainer();
+
+            using (var handler = new HttpClientHandler() { CookieContainer = cookieContainer })
+            using (var client = new HttpClient(handler) { BaseAddress = baseAddress })
+            {
+                var cookies = Cookies.Split(';').Select(s => s.Trim().Split('=').Select(ss => ss.Trim()));
+                foreach (var item in cookies)
+                {
+                    if (item.Count() == 2)
+                    {
+                        string key = item.ElementAt(0);
+                        string value = item.ElementAt(1);
+                        if (value.IndexOf(',') == -1)
+                            cookieContainer.Add(baseAddress, new Cookie(key, value));
+                    }
+                }
+
+                var result = client.GetAsync(path).Result;
+                result.EnsureSuccessStatusCode();
+
+                string json_str = await result.Content.ReadAsStringAsync();
+                JObject json = JObject.Parse(json_str);
+
+                if ((int)json["code"] != 0)
                 {
                     Sync.Tools.IO.CurrentIO.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
                     return null;

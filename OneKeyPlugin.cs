@@ -55,6 +55,24 @@ namespace OneKey
                          bililive.StopLive();
                          return true;
                      }
+                     else if(args[0].ToLower() == "room-name")
+                     {
+                         if (args.Count >= 2)
+                         {
+                             bililive.SetRoomName(args[1]);
+                         }
+                         else
+                         {
+                             bililive.GetRoomName().ContinueWith(roomNameTask =>
+                             {
+                                 roomNameTask.Wait();
+                                 string roomName = roomNameTask.Result;
+                                 Sync.Tools.IO.CurrentIO.WriteColor($"[OneKey]Room Name:{roomName ?? "!!!Get room name Failed!!!"}", ConsoleColor.Green);
+                             });
+                             
+                         }
+                         return true;
+                     }
 
                  }
                  return false;
