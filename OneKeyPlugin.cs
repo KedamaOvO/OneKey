@@ -67,7 +67,7 @@ namespace OneKey
                              {
                                  roomNameTask.Wait();
                                  string roomName = roomNameTask.Result;
-                                 Sync.Tools.IO.CurrentIO.WriteColor($"[OneKey]Room Name:{roomName ?? "!!!Get room name Failed!!!"}", ConsoleColor.Green);
+                                 Sync.Tools.IO.CurrentIO.WriteColor($"[OneKey]Room Name: {roomName ?? "!!!Get room name Failed!!!"}", ConsoleColor.Green);
                              });
                              
                          }
