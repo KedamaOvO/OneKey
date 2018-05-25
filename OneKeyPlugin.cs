@@ -1,4 +1,5 @@
-﻿using Sync.Command;
+﻿using OneKey.IRC;
+using Sync.Command;
 using Sync.Plugins;
 using Sync.Tools;
 using System;
@@ -21,11 +22,17 @@ namespace OneKey
             new PluginConfigurationManager(this).AddItem(new SettingIni());
             base.EventBus.BindEvent<PluginEvents.InitCommandEvent>(InitCommand);
             base.EventBus.BindEvent<PluginEvents.ProgramReadyEvent>(OneKeyCommandInit);
+            base.EventBus.BindEvent<PluginEvents.InitFilterEvent>(OneKeyFilterInit);
         }
 
         public override void OnEnable()
         {
             Sync.Tools.IO.CurrentIO.WriteColor(PLUGIN_NAME + " By " + PLUGIN_AUTHOR, ConsoleColor.DarkCyan);
+        }
+
+        private void OneKeyFilterInit(PluginEvents.InitFilterEvent @event)
+        {
+            @event.Filters.AddFilter(new IRCCommand());
         }
 
         private void OneKeyCommandInit(PluginEvents.ProgramReadyEvent @event)

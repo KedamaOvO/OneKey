@@ -45,11 +45,12 @@
   <ItemGroup>
     <Compile Include="BilibiliOneKeyLive.cs" />
     <Compile Include="OneKeyPlugin.cs" />
+    <Compile Include="IRC\IRCCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setting.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\osuSync\Sync\Sync.csproj">
+    <ProjectReference Include="..\Sync\Sync\Sync.csproj">
       <Project>{fbd514c2-2830-479e-b050-d1c383028456}</Project>
       <Name>Sync</Name>
     </ProjectReference>
