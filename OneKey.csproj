@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BilibiliOneKeyLive.cs" />
+    <Compile Include="IRCOutput.cs" />
     <Compile Include="OneKeyPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setting.cs" />

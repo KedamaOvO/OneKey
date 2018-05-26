@@ -23,6 +23,8 @@ namespace OneKey
         private string Cookies => propertyCookies.GetValue(configInstance).ToString();
         private string RoomId => propertyRoomId.GetValue(configInstance).ToString();
 
+        public ISyncOutput Output { get; set; }
+
         public BilibiliOneKeyLive()
         {
             Type config_manager_type = typeof(PluginConfigurationManager);
@@ -80,9 +82,9 @@ namespace OneKey
 
             if (json != null)
             {
-                Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
-                Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
-                Sync.Tools.IO.CurrentIO.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
+                Output.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
+                Output.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
+                Output.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
             }
         }
 
@@ -90,7 +92,7 @@ namespace OneKey
         {
             JObject json = await PostAsync("/room/v1/Room/stopLive");
 
-            Sync.Tools.IO.CurrentIO.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
+            Output.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
         }
 
         public async void SetRoomName(string name)
@@ -102,11 +104,11 @@ namespace OneKey
 
             if(json!=null)
             {
-                Sync.Tools.IO.CurrentIO.WriteColor("[OneKey]Success!",ConsoleColor.Green);
+                Output.WriteColor("[OneKey]Success!",ConsoleColor.Green);
             }
             else
             {
-                Sync.Tools.IO.CurrentIO.WriteColor("[OneKey]Fail!", ConsoleColor.Red);
+                Output.WriteColor("[OneKey]Fail!", ConsoleColor.Red);
             }
         }
 
@@ -149,7 +151,7 @@ namespace OneKey
 
                 if((int)json["code"]!=0)
                 {
-                    Sync.Tools.IO.CurrentIO.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
+                    Output.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
                     return null;
                 }
                 return json;
@@ -184,7 +186,7 @@ namespace OneKey
 
                 if ((int)json["code"] != 0)
                 {
-                    Sync.Tools.IO.CurrentIO.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
+                    Output.WriteColor($"Message:{json["msg"]}", ConsoleColor.Red);
                     return null;
                 }
                 return json;
