@@ -54,7 +54,7 @@ namespace OneKey
                 {
                     if (args[0].ToLower() == "start")
                     {
-                        bililive.StartLive();
+                        bililive.StartLive(!(output is IRCOutput));
                         return true;
                     }
                     else if (args[0].ToLower() == "stop")
