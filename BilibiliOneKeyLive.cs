@@ -72,7 +72,7 @@ namespace OneKey
             }
         }
 
-        public async void StartLive()
+        public async void StartLive(bool detail=true)
         {
             JObject json = await PostAsync("/room/v1/Room/startLive",new Dictionary<string, string>
             {
@@ -83,10 +83,13 @@ namespace OneKey
             if (json != null)
             {
                 Output.WriteColor($"Status:{json["data"]["status"]}", ConsoleColor.Green);
-                Output.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
-                Output.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
+                if (detail)
+                {
+                    Output.WriteColor($"RTMP Address:{json["data"]["rtmp"]["addr"]}", ConsoleColor.Green);
+                    Output.WriteColor($"RTMP Code:{json["data"]["rtmp"]["code"]}", ConsoleColor.Green);
+                }
+                }
             }
-        }
 
         public async void StopLive()
         {
