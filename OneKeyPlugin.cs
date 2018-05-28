@@ -12,7 +12,7 @@ using static Sync.Plugins.PluginEvents;
 
 namespace OneKey
 {
-    public class OneKeyPlugin : Plugin, IFilter
+    public class OneKeyPlugin : Plugin, IFilter,ISourceClient
     {
         private const string PLUGIN_NAME = "OneKey";
         private const string PLUGIN_AUTHOR = "KedamaOvO";
@@ -147,7 +147,7 @@ namespace OneKey
 
         public void onMsg(ref IMessageBase msg)
         {
-            if (msg.Message.RawText.StartsWith("?"))
+            if (msg.Message.RawText.StartsWith("?ok"))
             {
                 string[] msgs = msg.Message.RawText.Remove(0,1).Split(' ');
                 if (msgs.Length >= 2)
